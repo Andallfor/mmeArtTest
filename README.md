@@ -21,3 +21,5 @@ Program to help study for the MME art test.
 'imp': 'impressionism',  
 'abs': 'abstract',  
 'pre': 'pre renaissance'  
+'pri': 'pre impressionism',  
+'neo': 'neoclassicism'  

@@ -12,7 +12,9 @@ key = {
     'bar': 'baroque',
     'imp': 'impressionism',
     'abs': 'abstract',
-    'pre': 'pre renaissance'
+    'pre': 'pre renaissance',
+    'neo': 'neoclassicism',
+    'pri': 'pre impressionism',
 }
 
 csv = []
