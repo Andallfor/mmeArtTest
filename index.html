@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<head>
+    <link rel="stylesheet" href="styles.css">
+    <title>Art or Smth</title>
+</head>
+<body scroll="no" style="overflow: hidden">
+    <script>
+        // https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+        function shuffle(array) {
+            let currentIndex = array.length,  randomIndex;
+        
+            // While there remain elements to shuffle.
+            while (currentIndex != 0) {
+        
+            // Pick a remaining element.
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex--;
+        
+            // And swap it with the current element.
+            [array[currentIndex], array[randomIndex]] = [
+                array[randomIndex], array[currentIndex]];
+            }
+        
+            return array;
+        }
+
+        function displayNextPainting() {
+            currentPaintingIndex++;
+            let paintingToShow = paintingOrder[currentPaintingIndex] + 1;
+            document.getElementById('painting').src = 'images/' + paintingToShow.toString() + '.jpg';
+        }
+
+        const eraKey = {
+            'rel': 'realism',
+            'cub': 'cubism',
+            'nor': 'northern renaissance',
+            'itr': 'italian renaissance',
+            'rom': 'romanticism',
+            'bar': 'baroque',
+            'imp': 'impressionism',
+            'abs': 'abstract',
+            'pre': 'pre renaissance'
+        };
+        var paintingOrder = shuffle([...Array(70).keys()]);
+        var currentPaintingIndex = -1;
+        var currentStage = false;
+        var totalCorrect = 0;
+        var missed = [];
+        const stages = {
+            false: 'waiting for answer',
+            true: 'waiting for continue'
+        };
+
+        function submit(e) {
+            if (currentStage == false) {
+                if (e && e.keyCode == 13 || e == 0) {
+                    let userGuess = document.getElementById('input').value;
+                    let output = document.getElementById('answer');
+
+                    let isTitle, isEra, isArtist, isYear = false;
+                    let incorrect = '';
+
+                    let d = data[paintingOrder[currentPaintingIndex] + 1];
+                    
+                    let score = 0;
+                    if (userGuess.includes(d['title'])) {isTitle = true; score++}
+                    else incorrect += 'title ';
+                    if (userGuess.includes(d['name'])) {isEra = true; score++;}
+                    else incorrect += 'artist ';
+                    if (userGuess.includes(d['era'])) {isArtist = true; score++;}
+                    else incorrect += 'era ';
+                    if (userGuess.includes(d['year'])) {isYear = true; score++;}
+                    else incorrect += 'year ';
+                    if (score >= 2) totalCorrect++;
+                    else missed.push(d['title']);
+                    
+                    output.innerText = `TITLE: ${d['title']}
+                    ARTIST: ${d['name']}
+                    ERA: ${eraKey[d['era']]} (${d['era']})
+                    YEAR: ${d['year']}\n
+                    Your Score: ${score}/4
+                    Incorrect answers: ${incorrect}
+                    Press enter to continue.`;
+
+                    currentStage = !currentStage;
+                }
+            } else {
+                if (currentPaintingIndex + 1 >= paintingOrder.length) {
+                    document.getElementById('painting').src = '';
+                    document.getElementById('input_div').innerHTML = '';
+                    if (missed.length == 0) {
+                        document.getElementById('answer').innerText = 'Congrats, you everything correct.\nRefresh the page to try again.'
+                    } else {
+                        document.getElementById('answer').innerText = `\n
+                        ${totalCorrect}/70.
+                        You missed ${missed}.
+                        Refresh the page to try again.`;
+                    }
+                } else {
+                    document.getElementById('input').value = '';
+                    displayNextPainting();
+                    document.getElementById('answer').innerText = '';
+                    currentStage = !currentStage;
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            displayNextPainting();
+        });
+
+        // look man i cant be bothered to learn how to read csv files ok
+        const unproccessedData = `school of athens, itr, raphael, 1509-1510
+        arnolfini wedding portrait, nor, jan van eyck, 1434
+        self portrait, nor, albercht durer, 1500
+        garden of earthly delights, nor, hieronymus bosch, 1490-1510
+        visions of tondal, nor, hieronymus bosch, 1490-1500
+        vision of tundale, nor, unknown, 1485
+        tower of babel, nor, pieter bruegel the elder, 1563
+        netherlandish proverbs, nor, pieter bruegel the elder, 1559
+        landscape with the fall of icarus, nor, pieter bruegel the elder, 1560
+        portrait of erasmus of rotterdam, nor, hans holbein the younger, 1523
+        betrothal portrait of anne of cleves, nor, hans holbein the younger, 1539
+        portrait of henry viii, nor, hans holbein the younger, 1536-1537
+        portrait of christina of denmark, nor, hans holbein the younger, 1538
+        ugly duchess, nor, quinten matsys, 1513
+        judith in the tent of holofernes, nor, johan liss, 1622
+        salome with the head of john the baptist, nor, jacob cornelisz van oostanen, 1524
+        landscape with bathsheba, nor, jan van scorel, 1540
+        egg dance, nor, pieter aartsen, 1552
+        well stocked kitchen, nor, joachim beuckelaer, 1566
+        tomb of julius ii, itr, michelangelo, 1505-1545
+        martydom of st. matthew, bar, caravaggio, 1599-1600
+        fortune teller, bar, caravaggio, 1595
+        musicians, bar, caravaggio, 1595
+        judith beheading holofernes, bar, caravaggio, 1598-1599
+        david victorious over goliath, bar, caravaggio, 1599
+        entombment of christ, bar, caravaggio, 1603-1604
+        death of the virgin, bar, caravaggio, 1604-1606
+        salome receives the head of john the baptist, bar, caravaggio, 1609-1610
+        portrait of beatrice cenci, bar, guido reni, 1600
+        self portrait, bar, rembrandt, 1629
+        self portrait, bar, rembrandt, 1640
+        self portrait, bar, rembrandt, 1669
+        wandering above the sea of fog, rom, caspar david friedrich, 1818
+        solitary tree, rom, caspar david friedrich, 1823
+        winter landscape with church, rom, caspar david friedrich, 1811
+        cloister cemetery in the snow, rom, caspar david friedrich, 1817-1819
+        stonehenge, rom, john constable, 1836
+        nightmare (the incubus), rom, henry fuseli, 1781
+        lady macbeth, rom, henry fuseli, 1794
+        seventh plague of egypt, rom, john martin, 1823
+        joshua commanding the sun to stand still, rom, john martin, 1816
+        liberty leading the people, rom, eugene delacroix, 1830
+        deluge, rom, francis danby, 1840
+        pandaemonium, rom, john martin, 1841
+        stonebreakers, rel, gustave courbet, 1849
+        gleaners, rel, jean-fracois millet, 1857
+        first daguerreotype, rel, unknown, 1837
+        trafalgar square london during the erection of the nelson column, rel, talbot, 1843
+        sketch for carroling, rel, hp robinson, 1887
+        portrait of sarah bernhardt, rel, felix nadar, 1859
+        dejeuner sur l'herb, imp, manet, 1863
+        bal du moulin de galette, imp, renoir, 1876
+        paris a rainy day, imp, gustave caillebotte, 1899
+        under the tree, imp, kuroda seiki, 1898
+        impression sunrise, imp, monet, 1872
+        starry night, imp, van gogh, 1889
+        demoiselles d'avignon, cub, picasso, 1907
+        square with white border, abs, kandinsky, 1913
+        emperor justinian and his retinues, pre, unknown, 547
+        tribute money, itr, masaccio, 1427
+        wilton diptych, pre, unknown, 1395
+        small cowper madonna, itr, raphael, 1505
+        golden madonna of essen, pre, unknown, 980
+        rottgen pieta, pre, unknown, 1300-1325
+        la pieta, itr, michelangelo, 1498-1499
+        david, itr, michelangelo, 1501-1504
+        rebellious slave, itr, michelangelo, 1513
+        dying slave, itr, michelangelo, 1513-1516
+        birth of venus, itr, sandro botticelli, 1482
+        primavera, itr, sandro botticelli, 1470-1480`;
+        var data = {};
+        let dataLines = unproccessedData.split('\n');
+        for (let i = 0; i < dataLines.length; i++) {
+            let lineData = dataLines[i].split(',');
+            data[i + 1] = {
+                'title': lineData[0].trim(),
+                'era': lineData[1].trim(),
+                'name': lineData[2].trim(),
+                'year': lineData[3].trim(),
+            }
+        }
+    </script>
+    <img id="painting">
+    <div id="input_div">
+        <div onkeypress="submit(event)">
+            <form onsubmit="return false;" autocomplete="off">
+                <input type="text" id="input">
+            </form>
+        </div>
+    </div>
+    <div id="answer"></div>
+</body>
