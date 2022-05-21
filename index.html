@@ -43,7 +43,7 @@
             'pri': 'pre impressionism',
             'neo': 'neoclassicism'
         };
-        var paintingOrder = shuffle([...Array(70).keys()]);
+        var paintingOrder = shuffle([...Array(71).keys()]);
         var currentPaintingIndex = -1;
         var currentStage = false;
         var totalCorrect = 0;
@@ -94,7 +94,7 @@
                         document.getElementById('answer').innerText = 'Congrats, you everything correct.\nRefresh the page to try again.'
                     } else {
                         document.getElementById('answer').innerText = `\n
-                        ${totalCorrect}/70.
+                        ${totalCorrect}/71.
                         You missed ${missed}.
                         Refresh the page to try again.`;
                     }
