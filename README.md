@@ -1,7 +1,8 @@
 # mmeArtTest
-Program to help study for the MME art test.
+Program to help study for the MME art test.  
+Either go to the website (https://andallfor.github.io/mmeArtTest/) or use the below instructions to install the python program.
 
-# How To Run
+# How To Install
 1. Install python.
 2. Open command prompt/terminal.
 3. Type `python`. If that gives an error, type in `python3`.
